@@ -5,7 +5,7 @@ from threading import Thread
 
 app_web = Flask("")
 
-TOKEN = 'YOUR_TOKEN_HERE'
+TOKEN = '7939387490:AAF65XCR2KBpiZd77-6K2Ssiiex_PYHq8NA'
 
 @app_web.route("/")
 def home():
