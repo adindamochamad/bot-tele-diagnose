@@ -1,9 +1,10 @@
+import os
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 from flask import Flask
 from threading import Thread
 
-app_web = Flask("")
+app_web = Flask(__name__)
 
 TOKEN = '7939387490:AAF65XCR2KBpiZd77-6K2Ssiiex_PYHq8NA'
 
@@ -12,7 +13,8 @@ def home():
     return "Bot is running!"
 
 def run():
-    app_web.run(host="0.0.0.0", port=8080)
+    port = int(os.environ.get("PORT", 8080))
+    app_web.run(host="0.0.0.0", port=port)
 
 def keep_alive():
     t = Thread(target=run)
@@ -58,4 +60,10 @@ app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, pesan_handler))
 
 print("Bot berjalan... 🚀")
 keep_alive()
-app.run_polling()
+
+# Jalankan polling bot di thread terpisah supaya Flask tetap jalan
+def run_bot():
+    app.run_polling()
+
+bot_thread = Thread(target=run_bot)
+bot_thread.start()
