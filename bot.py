@@ -1,24 +1,18 @@
-import os
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 from flask import Flask
 from threading import Thread
 
-app_web = Flask(__name__)
+app_web = Flask("")
 
-TOKEN = '7939387490:AAF65XCR2KBpiZd77-6K2Ssiiex_PYHq8NA'
+TOKEN = 'YOUR_TOKEN_HERE'
 
 @app_web.route("/")
 def home():
     return "Bot is running!"
 
-def run():
-    port = int(os.environ.get("PORT", 8080))
-    app_web.run(host="0.0.0.0", port=port)
-
-def keep_alive():
-    t = Thread(target=run)
-    t.start()
+def run_web():
+    app_web.run(host="0.0.0.0", port=8080)
 
 def simpan_ke_file(teks):
     with open("catatan.txt", "a") as file:
@@ -42,7 +36,7 @@ async def halo_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def pesan_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     teks = update.message.text.lower()
     if teks.startswith("/"):
-        return  # abaikan perintah lain
+        return
     if teks == "halo":
         await update.message.reply_text("Hai juga! 👋")
     elif teks == "siapa kamu":
@@ -58,12 +52,10 @@ app.add_handler(CommandHandler("bantuan", bantuan))
 app.add_handler(CommandHandler("halo", halo_command))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, pesan_handler))
 
-print("Bot berjalan... 🚀")
-keep_alive()
+if __name__ == "__main__":
+    # Jalankan Flask di thread terpisah
+    Thread(target=run_web).start()
 
-# Jalankan polling bot di thread terpisah supaya Flask tetap jalan
-def run_bot():
+    print("Bot berjalan... 🚀")
+    # Jalankan polling di main thread
     app.run_polling()
-
-bot_thread = Thread(target=run_bot)
-bot_thread.start()
