@@ -3,6 +3,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, Con
 from flask import Flask
 from threading import Thread
 
+
 app_web = Flask("")
 
 TOKEN = '7939387490:AAF65XCR2KBpiZd77-6K2Ssiiex_PYHq8NA'
@@ -10,6 +11,11 @@ TOKEN = '7939387490:AAF65XCR2KBpiZd77-6K2Ssiiex_PYHq8NA'
 @app_web.route("/")
 def home():
     return "Bot is running!"
+
+def run():
+    port = int(os.environ.get('PORT', 8080))
+    app_web.run(host="0.0.0.0", port=port)
+
 
 def run_web():
     app_web.run(host="0.0.0.0", port=8080)
